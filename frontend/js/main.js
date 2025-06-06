@@ -317,6 +317,14 @@ function updateUIText() { // As provided, potentially needs to call renderDiscus
             }
         }
     });
+    // Handle data-translate-placeholder
+    document.querySelectorAll('[data-translate-placeholder]').forEach(el => {
+        const key = el.dataset.translatePlaceholder;
+        const fallback = el.placeholder || ''; // Use the existing placeholder as fallback
+        const translatedText = translate(key, fallback);
+        el.placeholder = translatedText;
+    });
+
 
     renderDiscussionList();
     if (currentDiscussionId && discussions[currentDiscussionId]) {
@@ -4746,6 +4754,7 @@ async function handleSendFriendRequest() {
 async function loadFriendsList() {
     if (!friendsListContainerFM) return;
     friendsListContainerFM.innerHTML = `<p class="italic text-sm text-gray-400" data-translate-key="loading_friends_list">Loading friends...</p>`;
+    updateUIText();
     try {
         const response = await apiRequest('/api/friends');
         const friends = await response.json(); // Expects List[FriendPublic]
@@ -4759,6 +4768,7 @@ function renderFriendsList(friends) {
     friendsListContainerFM.innerHTML = '';
     if (friends.length === 0) {
         friendsListContainerFM.innerHTML = `<p class="italic text-sm text-gray-400" data-translate-key="no_friends_yet_placeholder">You haven't added any friends yet.</p>`;
+        updateUIText();
         return;
     }
     friends.forEach(friend => {
