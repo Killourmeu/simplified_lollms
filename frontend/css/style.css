@@ -337,6 +337,57 @@ aside #adminBadge {
 }
 .dark #userMenuDropdown hr.my-1 { border-color: #374151; }
 
+.hljs-keyword{
+    color: rgb(47, 80, 45)
+}
+
+.dark .hljs-keyword{
+    color: rgb(186, 241, 182)
+}
+
+.hljs-number{
+    color: rgb(47, 80, 45)
+}
+
+
+
+.dark .hljs-number{
+    color: rgb(186, 241, 182)
+}
+
+
+.hljs-string{
+    color: rgb(54, 107, 52)
+}
+
+hljs-string
+
+.dark .hljs-string{
+    color: rgb(186, 241, 182)
+}
+
+.hljs-title{
+    color: rgb(60, 64, 89)
+}
+.dark .hljs-title{
+    color: rgb(191, 198, 243)
+}
+
+.hljs-built_in{
+    color: rgb(60, 64, 89)
+}
+.dark .hljs-built_in{
+    color: rgb(191, 198, 243)
+}
+
+.hljs-comment{
+    color: rgb(60, 64, 89)
+}
+.dark .hljs-comment{
+    color: rgb(191, 198, 243)
+}
+
+
 /* ==========================================================================
    3. Chat Area & Message Styling
    ========================================================================== */
@@ -433,7 +484,24 @@ aside #adminBadge {
     color: #FEF3C7; /* dark:text-yellow-200 */
     border-color: #a16207; /* dark:border-yellow-700 */
 }
+/* The class that JavaScript will add to the AI bubble during generation */
+.ai-bubble.is-streaming {
+    animation: pulse-bg 2s infinite;
+}
 
+
+/* The keyframe animation for the pulse effect */
+@keyframes pulse-bg {
+    0% {
+        background-color: var(--ai-bubble-bg-color);
+    }
+    50% {
+        background-color: var(--ai-bubble-bg-pulse-color);
+    }
+    100% {
+        background-color: var(--ai-bubble-bg-color);
+    }
+}
 /* Sender Information (Name, Avatar, Model Badge) */
 .sender-name {
     font-size: 0.75rem; /* Standardized from 0.7rem and 0.75rem */
@@ -551,6 +619,7 @@ aside #adminBadge {
     overflow-x: auto;
     font-size: 0.85rem;
     background-color: rgba(0,0,0,0.05);
+    color: #111827;
     font-family: 'Fira Code', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
 }
 .dark .message-bubble pre.simple-code {
@@ -599,7 +668,116 @@ aside #adminBadge {
     background: rgba(0,0,0,0.7);
 }
 
+/* --- Image Modal Viewer Styles (REVISED) --- */
+
+.image-modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background-color: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    cursor: zoom-out;
+}
+
+.image-modal-overlay.visible {
+    opacity: 1;
+}
+
+.image-modal-content {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    transition: transform 0.3s ease;
+    cursor: grab;
+    
+    /* --- KEY CHANGES --- */
+    display: flex; /* Make the container a flexbox */
+    overflow: auto; /* Add scrollbars if content overflows */
+}
+
+.image-modal-content.zoomed {
+    cursor: move;
+    overflow: hidden; /* Hide scrollbars when zoomed for panning */
+}
+
+.image-modal-content img {
+    /* --- KEY CHANGES --- */
+    width: auto;
+    height: auto;
+    max-width: 100%;  /* The image can't be wider than its container */
+    max-height: 100%; /* The image can't be taller than its container */
+    margin: auto;     /* This centers the image perfectly inside the flex container */
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.image-modal-close-btn {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    line-height: 1;
+}
+
+.image-modal-help-text {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
 /* Typing Indicator */
+/* --- Typing Indicator Styles --- */
+.typing-indicator {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.typing-indicator span {
+    height: 8px;
+    width: 8px;
+    border-radius: 50%;
+    background-color: #9ca3af; /* A neutral gray */
+    margin: 0 2px;
+    animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.dark .typing-indicator span {
+    background-color: #6b7280;
+}
+
+.typing-indicator span:nth-of-type(1) {
+    animation-delay: -0.32s;
+}
+
+.typing-indicator span:nth-of-type(2) {
+    animation-delay: -0.16s;
+}
+
+/* The bouncing animation keyframes */
+@keyframes bounce {
+    0%, 80%, 100% {
+        transform: scale(0);
+    }
+    40% {
+        transform: scale(1.0);
+    }
+}
 .typing-bubble { /* Represents the AI bubble placeholder */
     align-self: flex-start;
     padding: 1rem 1.25rem; /* Matches AI bubble padding if desired or can be unique */
@@ -654,27 +832,176 @@ aside #adminBadge {
 }
 .dark .empty-message { color: #9ca3af; /* dark:text-gray-400 */ }
 
+/* --- Step Rendering Styles --- */
+.steps-container {
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #e5e7eb; /* border-gray-200 */
+}
+.dark .steps-container {
+    border-top-color: #374151; /* dark:border-gray-700 */
+}
 
+
+.step-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+.dark .step-item {
+    color: #9ca3af; /* dark:text-gray-400 */
+}
+
+.step-icon {
+    flex-shrink: 0;
+    width: 1.25rem; /* w-5 */
+    height: 1.25rem; /* h-5 */
+    margin-right: 0.75rem; /* mr-3 */
+}
+
+/* Spinner for 'pending' status */
+.step-item.status-pending .step-icon .spinner {
+    animation: rotate 1.5s linear infinite;
+    width: 1rem;
+    height: 1rem;
+}
+.step-item.status-pending .step-icon .spinner .path {
+    stroke: #6b7280; /* text-gray-500 */
+    stroke-linecap: round;
+    animation: dash 1.5s ease-in-out infinite;
+}
+.dark .step-item.status-pending .step-icon .spinner .path {
+    stroke: #9ca3af; /* dark:text-gray-400 */
+}
+
+/* Checkmark for 'done' status */
+.step-item.status-done .step-icon {
+    color: #10B981; /* green-500 */
+}
+.dark .step-item.status-done .step-icon {
+    color: #34D399; /* green-400 */
+}
+.step-item.status-done .step-text {
+    color: #1f2937; /* text-gray-800 */
+}
+.dark .step-item.status-done .step-text {
+    color: #d1d5db; /* dark:text-gray-300 */
+}
+
+/* --- New styles for differentiated steps --- */
+
+/* Style for informational steps ('step' type) */
+.step-item-info {
+    color: #4B5563; /* gray-600 */
+    align-items: flex-start; /* Align icon to top */
+}
+.dark .step-item-info {
+    color: #D1D5DB; /* dark:text-gray-300 */
+}
+.step-item-info .step-icon {
+    margin-top: 0.125rem; /* Align icon nicely with first line of text */
+}
+
+/* Style for process steps ('step_start'/'step_end' type) */
+.step-item-process.status-pending {
+    color: #6b7280; /* text-gray-500 */
+}
+.dark .step-item-process.status-pending {
+    color: #9ca3af; /* dark:text-gray-400 */
+}
+
+
+/* Spinner Keyframe Animations */
+@keyframes rotate { 100% { transform: rotate(360deg); } }
+@keyframes dash {
+    0% { stroke-dasharray: 1, 150; stroke-dashoffset: 0; }
+    50% { stroke-dasharray: 90, 150; stroke-dashoffset: -35; }
+    100% { stroke-dasharray: 90, 150; stroke-dashoffset: -124; }
+}
+/* --- Collapsible Steps Styles --- */
+.steps-container {
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #e5e7eb; /* border-gray-200 */
+    overflow: hidden; /* Key for the collapse animation */
+    transition: max-height 0.4s ease-in-out;
+}
+.dark .steps-container {
+    border-top-color: #374151; /* dark:border-gray-700 */
+}
+
+/* By default, the container is collapsed to show only the last step */
+.steps-container.collapsed {
+    /* Adjust this value if your step items have different heights */
+    max-height: 36px; 
+}
+
+
+
+
+/* ... (step-icon, spinner, and status-done styles remain the same) ... */
+
+/* --- The Toggle Button --- */
+.steps-toggle-button {
+    background: none; border: none;
+    color: #6B7280; font-size: 0.8rem;
+    font-weight: 500; cursor: pointer;
+    margin-top: 0.25rem; padding: 0.25rem 0;
+    display: flex; align-items: center;
+    width: 100%;
+}
+.dark .steps-toggle-button { color: #9CA3AF; }
+.steps-toggle-button:hover .toggle-text { text-decoration: underline; }
+
+.steps-toggle-button .toggle-text {
+    /* --- Key addition for long text --- */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-grow: 1;
+    text-align: left;
+}
+
+.steps-toggle-button .toggle-arrow {
+    width: 0.85rem; height: 0.85rem;
+    margin-left: 0.5rem;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+}
+.steps-container.collapsed + .steps-toggle-button .toggle-arrow {
+    transform: rotate(-90deg);
+}
 /* ==========================================================================
    4. Code Blocks & Output
    ========================================================================== */
 
-/* Enhanced Code Block (uses CSS Variables) */
-.code-block-container {
-    margin: 1rem 0;
+/* Shared Styles */
+.code-block-container,
+.code-block-wrapper {
     border-radius: 0.75rem;
     overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
     font-family: 'Fira Code', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
-    background: var(--code-bg-light);
-    border: 1px solid var(--code-border-light);
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05); /* Subtle shadow */
-}
-.dark .code-block-container {
-    background: var(--code-bg-dark);
-    border: 1px solid var(--code-border-dark);
+    box-sizing: border-box;
 }
 
-.code-block-container .code-block-header {
+/* Light Theme Container */
+.code-block-container {
+    margin: 1rem 0;
+    background: var(--code-bg-light);
+    border: 1px solid var(--code-border-light);
+}
+
+/* Dark Theme Container */
+.dark .code-block-container {
+    background: var(--code-bg-dark);
+    border-color: var(--code-border-dark);
+}
+
+/* Header Shared */
+.code-block-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -682,24 +1009,30 @@ aside #adminBadge {
     border-bottom: 1px solid var(--code-border-light);
     background: var(--code-header-bg-light);
 }
-.dark .code-block-container .code-block-header {
-    border-bottom: 1px solid var(--code-border-dark);
+
+.dark .code-block-header {
+    border-bottom-color: var(--code-border-dark);
     background: var(--code-header-bg-dark);
 }
 
-.code-block-container .code-language {
+/* Language Label */
+.code-language {
     font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--code-header-text-light);
 }
-.dark .code-block-container .code-language {
+
+.dark .code-language {
     color: var(--code-header-text-dark);
 }
 
-.code-block-container .code-copy-btn {
-    display: flex; align-items: center; gap: 0.25rem;
+/* Copy Button */
+.code-copy-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
     padding: 0.25rem 0.5rem;
     border-radius: 0.375rem;
     font-size: 0.75rem;
@@ -709,142 +1042,153 @@ aside #adminBadge {
     border: 1px solid var(--code-copy-btn-border-light);
     color: var(--code-copy-btn-text-light);
 }
-.dark .code-block-container .code-copy-btn {
+
+.dark .code-copy-btn {
     background: var(--code-copy-btn-bg-dark);
-    border: 1px solid var(--code-copy-btn-border-dark);
+    border-color: var(--code-copy-btn-border-dark);
     color: var(--code-copy-btn-text-dark);
 }
-.code-block-container .code-copy-btn:hover {
+
+.code-copy-btn:hover {
     background: var(--code-copy-btn-hover-bg-light);
     border-color: var(--code-copy-btn-hover-border-light);
 }
-.dark .code-block-container .code-copy-btn:hover {
+
+.dark .code-copy-btn:hover {
     background: var(--code-copy-btn-hover-bg-dark);
     border-color: var(--code-copy-btn-hover-border-dark);
 }
-.code-block-container .code-copy-btn.copied {
+
+.code-copy-btn.copied {
     background: var(--code-copy-btn-copied-bg-light);
     border-color: var(--code-copy-btn-copied-border-light);
     color: var(--code-copy-btn-copied-text-light);
 }
-.dark .code-block-container .code-copy-btn.copied {
-    background: #22c55e; /* Tailwind green-500 */
-    border-color: #16a34a; /* Tailwind green-600 */
+
+.dark .code-copy-btn.copied {
+    background: #22c55e;
+    border-color: #16a34a;
     color: white;
 }
-.code-block-container .code-copy-btn svg {
-    width: 0.875rem; height: 0.875rem; /* 14px */
+
+.code-copy-btn svg {
+    width: 14px;
+    height: 14px;
 }
 
-
-.code-block-container .code-block { /* The actual <pre> or <code> with code */
+/* Code Block */
+.code-block {
     margin: 0;
     padding: 1rem;
     font-size: 0.875rem;
-    line-height: 1.6; /* Consistent line height */
+    line-height: 1.6;
     overflow-x: auto;
     color: var(--code-text-light);
-    background: var(--code-bg-light); /* Ensure pre/code also has this bg */
+    background: var(--code-bg-light);
 }
-.dark .code-block-container .code-block {
+
+.dark .code-block {
     color: var(--code-text-dark);
     background: var(--code-bg-dark);
 }
 
-/* Simpler Code Block Wrapper (if used for non-highlighted <pre> or basic formatting) */
+/* Wrapper for Basic Blocks */
 .code-block-wrapper {
     margin-bottom: 1rem;
+    border: 1px solid #e5e7eb;
     border-radius: 0.375rem;
-    overflow: hidden;
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); /* shadow-md */
-    border: 1px solid #e5e7eb; /* border border-gray-200 */
-}
-.dark .code-block-wrapper {
-    border-color: #374151; /* dark:border-gray-700 */
 }
 
-.code-block-wrapper .code-block-header { /* Scoped to this wrapper */
+.dark .code-block-wrapper {
+    border-color: #374151;
+}
+
+.code-block-wrapper .code-block-header {
     padding: 0.5rem 0.75rem;
     font-size: 0.8em;
     font-weight: 500;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #f3f4f6; /* bg-gray-100 */
-    color: #374151; /* text-gray-700 */
-    border-bottom: 1px solid #d1d5db; /* border-b border-gray-300 */
-}
-.dark .code-block-wrapper .code-block-header {
-    background-color: #1f2937; /* dark:bg-gray-800 */
-    color: #d1d5db; /* dark:text-gray-300 */
-    border-bottom-color: #374151; /* dark:border-gray-700 */
+    background-color: #f3f4f6;
+    color: #374151;
+    border-bottom: 1px solid #d1d5db;
 }
 
-.code-block-wrapper .code-block-buttons button {
-    border: 1px solid #d1d5db; /* border-gray-300 */
+.dark .code-block-wrapper .code-block-header {
+    background-color: #1f2937;
+    color: #d1d5db;
+    border-bottom-color: #374151;
+}
+
+/* Buttons Inside Wrapper */
+.code-block-buttons button {
+    border: 1px solid #d1d5db;
     padding: 0.25rem 0.5rem;
     font-size: 0.75em;
-    cursor: pointer;
     border-radius: 0.25rem;
     margin-left: 0.5rem;
+    cursor: pointer;
     transition: background-color 0.2s;
-    background-color: #e5e7eb; /* bg-gray-200 */
-    color: #374151; /* text-gray-700 */
+    background-color: #e5e7eb;
+    color: #374151;
 }
-.code-block-wrapper .code-block-buttons button:hover {
-    background-color: #d1d5db; /* hover:bg-gray-300 */
-}
-.dark .code-block-wrapper .code-block-buttons button {
-    background-color: #374151; /* dark:bg-gray-700 */
-    border-color: #4b5563; /* dark:border-gray-600 */
-    color: #e5e7eb; /* dark:text-gray-200 */
-}
-.dark .code-block-wrapper .code-block-buttons button:hover {
-    background-color: #4b5563; /* dark:hover:bg-gray-600 */
-}
-.code-block-wrapper .code-block-buttons button svg { vertical-align: middle; }
 
-/* Styling for <pre> tags, potentially within .message-content.prose or .code-block-wrapper */
+.code-block-buttons button:hover {
+    background-color: #d1d5db;
+}
+
+.dark .code-block-buttons button {
+    background-color: #374151;
+    border-color: #4b5563;
+    color: #e5e7eb;
+}
+
+.dark .code-block-buttons button:hover {
+    background-color: #4b5563;
+}
+
+.code-block-buttons button svg {
+    vertical-align: middle;
+}
+
+/* <pre> styles in prose context */
 .message-content.prose pre,
 .code-block-wrapper pre {
-    padding: 0 !important; /* Reset padding, assuming hljs or theme handles it */
-    margin:0 !important;
-    border-radius: 0 !important; /* Reset radius */
-    background-color: transparent !important; /* Handled by hljs or specific themes */
-    white-space: pre-wrap; /* Allow wrapping of long lines */
-    word-break: break-all; /* Break long words/tokens */
+    padding: 0 !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    background-color: transparent !important;
+    white-space: pre-wrap;
+    word-break: break-all;
     overflow-x: auto;
 }
-.message-content.prose pre code.hljs { /* If using highlight.js within prose */
-    padding: 1em; /* Standard padding for hljs themes */
+
+.message-content.prose pre {
+    padding: 1em;
     display: block;
     font-size: 0.875em;
     line-height: 1.6;
-    border-bottom-left-radius: 0.375rem; /* Match wrapper if applicable */
+    border-bottom-left-radius: 0.375rem;
     border-bottom-right-radius: 0.375rem;
 }
 
-/* Code Output (for results of code execution, not the code itself) */
+/* Code Output Styling */
 .code-output {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     font-size: 0.875em;
     padding: 0.75em 1em;
-    margin-top: 0; /* Assumed to be part of a code block structure */
-    border-bottom-left-radius: 0.375rem;
-    border-bottom-right-radius: 0.375rem;
-    border-top: 1px solid #d1d5db; /* border-gray-300 */
+    margin-top: 0;
+    border-top: 1px solid #d1d5db;
+    border-radius: 0 0 0.375rem 0.375rem;
+    background-color: #f9fafb;
+    color: #1f2937;
     max-height: 200px;
     overflow-y: auto;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
     word-break: break-all;
-    background-color: #f9fafb; /* bg-gray-50 */
-    color: #1f2937; /* text-gray-800 */
 }
+
 .dark .code-output {
-    background-color: #111827; /* dark:bg-gray-900 */
-    color: #9ca3af; /* dark:text-gray-400 */
-    border-top-color: #374151; /* dark:border-gray-700 */
+    background-color: #111827;
+    color: #9ca3af;
+    border-top-color: #374151;
 }
 
 
@@ -888,6 +1232,11 @@ aside #adminBadge {
     display: flex;
     align-items: center;
     gap: 0.25rem; /* Tighter gap for individual action buttons */
+}
+.message-actions-group button:disabled,
+.message-rating button:disabled {
+    opacity: var(--message-action-btn-disabled-opacity);
+    cursor: not-allowed;
 }
 
 /* Detail Badges (Token, Time, Source) */
@@ -1686,12 +2035,16 @@ html:not(.dark) #appLoadingMessage { background: linear-gradient(135deg, #f9fafb
 
 /* Reset for code blocks handled by syntax highlighters (e.g. Highlight.js) */
 .prose pre code {
-    background-color: transparent !important;
-    color: inherit !important;
+    background-color: white !important;
+    color: black !important;
     padding: 0 !important;
     font-weight: inherit !important;
     font-size: inherit !important; /* Ensure it inherits from pre */
     border-radius: 0 !important;
+}
+.dark .prose pre code {
+    background-color: black !important;
+    color: white !important;
 }
 .prose pre { /* For the <pre> tag itself when using syntax highlighting */
     /* Background, padding etc. should be handled by the syntax highlighter's theme */
@@ -1699,6 +2052,8 @@ html:not(.dark) #appLoadingMessage { background: linear-gradient(135deg, #f9fafb
     border-radius: 0.375rem; /* If .code-block-container is not used */
     overflow-x: auto;
 }
+
+
 
 .prose ul > li::before {
     background-color: #9ca3af; /* bg-gray-400 */
@@ -1901,4 +2256,77 @@ html:not(.dark) #appLoadingMessage { background: linear-gradient(135deg, #f9fafb
 .dark .discussion-action-btn.primary:hover {
     background-color: #1E3A8A; /* dark:bg-blue-800 */
     color: #93C5FD; /* dark:text-blue-300 */
+}
+
+
+/* --- Custom Image Modal Styles --- */
+
+/* The dark overlay that covers the entire screen */
+.image-modal-overlay {
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85); /* Dark, semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: zoom-out;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* A class to add when the modal is open for the fade-in effect */
+.image-modal-overlay.open {
+    opacity: 1;
+}
+
+/* The image itself inside the modal */
+.image-modal-content {
+    max-width: 90vw;   /* Max width is 90% of viewport width */
+    max-height: 90vh;  /* Max height is 90% of viewport height */
+    object-fit: contain; /* Ensures the whole image is visible without distortion */
+    transition: transform 0.3s ease;
+    cursor: default;
+}
+
+/* The close button (top right corner) */
+.image-modal-close-btn {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 3rem;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    transition: transform 0.2s ease;
+}
+
+.image-modal-close-btn:hover {
+    transform: scale(1.1);
+}
+
+/* --- Thumbnail Enhancement in Chat Bubble --- */
+
+/* Style for the image item in the chat */
+.message-image-item {
+    cursor: zoom-in;
+    overflow: hidden; /* Important for the zoom effect */
+    border-radius: 8px;
+}
+
+/* The actual image thumbnail */
+.message-image-item img {
+    display: block;
+    width: 100%;
+    transition: transform 0.3s ease;
+}
+
+/* A nice zoom-in effect when hovering over the thumbnail */
+.message-image-item:hover img {
+    transform: scale(1.05);
 }
